@@ -56,26 +56,37 @@ class Customer:
         return formatted_result
 
     def statement(self) -> str:
-        total_amount: float = self.__total_amount()
-        result: str = "Rental Record for " + self.get_name() + "\n"
+        return self.__statement_header() + \
+               self.__statement_body() + \
+               self.__statement_footer()
 
-        result += self.__construct_statement(
+    def __statement_header(self):
+        return "Rental Record for " + self.get_name() + "\n"
+
+    def __statement_body(self):
+        return self.__construct_statement(
             lambda rental: "\t" + rental.get_movie().get_title() + "\t" + \
                            str(self.__rental_amount(rental)) + "\n")
 
-        frequent_renter_points: int = self.__frequent_renter_point()
-
-        result += "Amount owed is " + str(total_amount) + "\n"
-        result += "You earned " + str(frequent_renter_points) + \
-                  " frequent renter points"
-
-        return result
+    def __statement_footer(self):
+        statement_footer = "Amount owed is " + str(self.__total_amount()) + "\n" + \
+                           "You earned " + str(self.__frequent_renter_point()) + \
+                           " frequent renter points"
+        return statement_footer
 
     def html_statement(self):
-        total_amount: float = self.__total_amount()
+        return self.__html_statement_header() + \
+               self.__html_statement_body() + \
+               self.__html_statement_footer()
+
+    def __html_statement_header(self):
+        return f"<html><h1>Rental Record for <b>{self.name}</b></h1>"
+
+    def __html_statement_body(self):
         result = self.__construct_statement(
             lambda rental: f" {rental.get_movie().get_title()} {self.__rental_amount(rental)}</br>")
+        return f"</br>{result}"
 
-        return f"<html><h1>Rental Record for <b>{self.name}</b></h1></br>{result}" \
-               f"Amount owed is <b>{total_amount}</b></br>" \
+    def __html_statement_footer(self):
+        return f"Amount owed is <b>{self.__total_amount()}</b></br>" + \
                f"You earned <b>{self.__frequent_renter_point()}</b> frequent renter points</html>"
